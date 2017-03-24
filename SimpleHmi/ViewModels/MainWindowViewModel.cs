@@ -20,6 +20,10 @@ namespace SimpleHmi.ViewModels
         private readonly IPlcService _plcService;
         private readonly IPlc2Service _plc2Service;
 
+        public ICommand ConnectPlcCommand { get; private set; }
+
+        public ICommand DisconnectPlcCommand { get; private set; }
+
         public MainWindowViewModel(IRegionManager regionManager, IPlcService plcService, IPlc2Service plc2Service)
         {
             _regionManager = regionManager;
@@ -30,8 +34,20 @@ namespace SimpleHmi.ViewModels
             _regionManager.RegisterViewWithRegion(Regions.StatusBarRegion, typeof(HmiStatusBar));
             _regionManager.RegisterViewWithRegion(Regions.LeftMenuRegion, typeof(LeftMenu));
 
+            ConnectPlcCommand = new DelegateCommand(ConnectPlc);
+            DisconnectPlcCommand = new DelegateCommand(DisconnectPlc);
+        }
+
+        private void ConnectPlc()
+        {
             _plcService.Connect();
             _plc2Service.Connect();
+        }
+
+        private void DisconnectPlc()
+        {
+            _plcService.Disconnect();
+            _plc2Service.Disconnect();
         }
     }
 }
